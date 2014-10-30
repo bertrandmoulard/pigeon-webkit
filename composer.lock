@@ -1,0 +1,61 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "1eaf931151ab708a00a3e9d5c7bca300",
+    "packages": [
+        {
+            "name": "alpaca/webkit",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chobie/alpaca-webkit.git",
+                "reference": "2d9882cec8c161b518fde1d180e81e2359b08d67"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chobie/alpaca-webkit/zipball/2d9882cec8c161b518fde1d180e81e2359b08d67",
+                "reference": "2d9882cec8c161b518fde1d180e81e2359b08d67",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Alpaca": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Shuhei Tanuma",
+                    "email": "chobieee@gmail.com"
+                }
+            ],
+            "description": "webkit driver for alpaca",
+            "homepage": "http://github.com/chobie/alpaca-webkit",
+            "keywords": [
+                "alpaca",
+                "capybara",
+                "webkit"
+            ],
+            "time": "2012-03-19 04:30:53"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "alpaca/webkit": 20
+    },
+    "prefer-stable": false,
+    "platform": [],
+    "platform-dev": []
+}
