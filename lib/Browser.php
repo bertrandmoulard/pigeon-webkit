@@ -5,8 +5,10 @@ namespace PhpCapybaraWebkit;
 class Browser {
 
   function __construct() {
+    $this->capybara_js_contents = file_get_contents("/Library/Ruby/Gems/2.0.0/gems/capybara-webkit-1.3.1/src/capybara.js");
     $this->setupWebkitServerAndPort();
     $this->client = stream_socket_client("tcp://localhost:" . $this->port,$errno, $errstr,5);
+    $this->evaluateScript($this->capybara_js_contents);
   }
 
   public function visit($url) {
@@ -15,6 +17,14 @@ class Browser {
 
   public function body() {
     return $this->command('Body');
+  }
+
+  public function evaluateScript($content) {
+    $this->command("Evaluate", [$content]);
+  }
+
+  public function execute($js) {
+    $this->command("Execute", [$js]);
   }
 
   private function command($name, $args=array()) {

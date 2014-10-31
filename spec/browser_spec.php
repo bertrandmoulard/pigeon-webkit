@@ -16,14 +16,14 @@ describe("Browser", function() {
     $this->browser = null;
   });
 
-  describe(".visit", function() {
+  describe("#visit", function() {
     it("returns an empty string", function() {
       $response = $this->browser->visit($this->local_url);
       expect($response)->toBe("");
     });
   });
 
-  describe(".body", function() {
+  describe("#body", function() {
     context("when the browser is visiting a page", function() {
       it("returns the html source of the page", function() {
         $this->browser->visit($this->local_url);
@@ -38,5 +38,36 @@ describe("Browser", function() {
       });
     });
   });
+
+  describe("#evaluateScript", function() {
+    beforeEach(function() {
+      $this->browser->visit("https://google.com");
+    });
+
+    context("when a script is valid", function() {
+      it("runs", function() {
+        $res = $this->browser->evaluateScript("Capybara.findCss('span');");
+        var_dump($res);
+      });
+    });
+  });
+
+  // describe("#findCss", function() {
+    // beforeEach(function() {
+      // $this->browser->visit($this->local_url);
+    // });
+
+    // context("when no elements match given css", function() {
+      // it("returns null", function() {
+        // expect($this->browser->findCss(".not-exists"))->toBeNull();
+      // });
+    // });
+    // context("when one element matches given css", function() {
+      // it("returns null", function() {
+        // expect($this->browser->findCss(".test-css-class"))->not()->toBeNull();
+      // });
+    // });
+
+  // });
 
 });
