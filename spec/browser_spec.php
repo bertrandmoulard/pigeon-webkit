@@ -6,7 +6,13 @@ use PhpCapybaraWebkit\Browser;
 
 describe("Browser", function() {
 
-  $this->browser = new Browser();
+  beforeEach(function() {
+    $this->browser = new Browser();
+  });
+
+  afterEach(function() {
+    $this->browser = null;
+  });
 
   describe("visit", function() {
     it("returns an empty string", function() {
@@ -15,20 +21,20 @@ describe("Browser", function() {
     });
   });
 
-  // describe("body", function() {
-    // context("when the browser is visiting a page", function() {
-      // it("should return the html source of the page", function() {
-        // $this->browser->visit("https://google.com");
-        // expect($this->browser->body())->toContain("<html>");
-      // });
+  describe("body", function() {
+    context("when the browser is visiting a page", function() {
+      it("should return the html source of the page", function() {
+        $this->browser->visit("https://google.com");
+        expect($this->browser->body())->toContain("<html");
+      });
 
-    // });
+    });
 
-    // context("when the browser is not visiting a page", function() {
-      // it("should return an empter string", function() {
-        // expect($this->browser->body())->toBe("");
-      // });
-    // });
-  // });
+    context("when the browser is not visiting a page", function() {
+      it("should return an empter string", function() {
+        expect($this->browser->body())->toBe("");
+      });
+    });
+  });
 
 });
