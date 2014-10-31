@@ -6,6 +6,8 @@ use PhpCapybaraWebkit\Browser;
 
 describe("Browser", function() {
 
+  $this->local_url = "file:///". __DIR__ ."/fixtures/foo.html";
+
   beforeEach(function() {
     $this->browser = new Browser();
   });
@@ -14,24 +16,24 @@ describe("Browser", function() {
     $this->browser = null;
   });
 
-  describe("visit", function() {
+  describe(".visit", function() {
     it("returns an empty string", function() {
-      $response = $this->browser->visit("https://google.com");
+      $response = $this->browser->visit($this->local_url);
       expect($response)->toBe("");
     });
   });
 
-  describe("body", function() {
+  describe(".body", function() {
     context("when the browser is visiting a page", function() {
-      it("should return the html source of the page", function() {
-        $this->browser->visit("https://google.com");
-        expect($this->browser->body())->toContain("<html");
+      it("returns the html source of the page", function() {
+        $this->browser->visit($this->local_url);
+        expect($this->browser->body())->toContain("find me: body");
       });
 
     });
 
     context("when the browser is not visiting a page", function() {
-      it("should return an empter string", function() {
+      it("returns an empty string", function() {
         expect($this->browser->body())->toBe("");
       });
     });
