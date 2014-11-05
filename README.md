@@ -1,1 +1,1 @@
-# Rat Webkit: capybara-webkit for PHP
+# Pigeon Webkit: capybara-webkit server driver for Mink
