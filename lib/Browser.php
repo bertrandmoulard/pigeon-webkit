@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpCapybaraWebkit;
+namespace PigeonWebkit;
 
 class Browser {
   protected $client;

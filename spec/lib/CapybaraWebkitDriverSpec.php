@@ -2,8 +2,8 @@
 
 require_once __DIR__ . "/../spec_helper.php";
 
-use PhpCapybaraWebkit\Browser;
-use PhpCapybaraWebkit\CapybaraWebkitDriver;
+use PigeonWebkit\Browser;
+use PigeonWebkit\CapybaraWebkitDriver;
 
 describe("CapybaraWebkitDriver", function() {
 

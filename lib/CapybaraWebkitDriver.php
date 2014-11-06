@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpCapybaraWebkit;
+namespace PigeonWebkit;
 
 use Behat\Mink\Session,
   Behat\Mink\Element\NodeElement,
