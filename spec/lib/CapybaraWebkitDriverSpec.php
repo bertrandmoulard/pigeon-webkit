@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . "/../spec_helper.php";
+require_once __DIR__ . "/../spec_helper.php";
 
 use PhpCapybaraWebkit\Browser;
 use PhpCapybaraWebkit\CapybaraWebkitDriver;
@@ -12,7 +12,7 @@ describe("CapybaraWebkitDriver", function() {
 
   before(function() {
     $this->test_http_server = startTestHttpServer();
-    $browser = new Browser('/Library/Ruby/Gems/2.0.0/gems/capybara-webkit-1.3.1/bin/webkit_server');
+    $browser = new Browser();
     $this->driver = new CapybaraWebkitDriver($browser);
     $this->session = new Behat\Mink\Session($this->driver);
     $this->driver->setSession($this->session);

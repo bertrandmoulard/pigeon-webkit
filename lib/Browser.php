@@ -8,7 +8,12 @@ class Browser {
   protected $process;
   protected $server_path;
 
-  public function __construct() {
+  public function __construct($server_path = null) {
+    if($server_path) {
+      $this->server_path = $server_path;
+    } else {
+      $this->server_path = $this->generateServerPath(exec('gem environment | grep INSTALLATION'));
+    }
     $this->start();
   }
 
@@ -34,6 +39,18 @@ class Browser {
 
   public function getClient() {
     return $this->client;
+  }
+
+  public function getServerPath() {
+    return $this->server_path;
+  }
+
+  public function generateServerPath($output_text) {
+    return trim(explode(":", $output_text)[1]) . "/gems/capybara-webkit-1.3.1/bin/webkit_server";
+  }
+
+  public function getGemCommandOuput() {
+    return exec('gem environment | grep INSTALLATION');
   }
 
   public function currentUrl() {
@@ -77,9 +94,8 @@ class Browser {
 
   public function startServer() {
     $this->pipes = [];
-    $server_path = '/Library/Ruby/Gems/2.0.0/gems/capybara-webkit-1.3.1/bin/webkit_server';
 
-    if (!file_exists($server_path)) {
+    if (!file_exists($this->server_path)) {
       throw new \RuntimeException("webkit_server not found");
     }
 
@@ -89,7 +105,7 @@ class Browser {
       2 => ["pipe", "w"],
     ];
 
-    $process = proc_open($server_path, $descriptorspec, $this->pipes);
+    $process = proc_open($this->server_path, $descriptorspec, $this->pipes);
     if (is_resource($process)) {
       $data = fgets($this->pipes[1]);
       $this->port = $this->discoverServerPort($data);
