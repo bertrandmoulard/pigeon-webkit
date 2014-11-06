@@ -24,6 +24,18 @@ class Browser {
     $this->disconnect();
   }
 
+  public function getPort() {
+    return $this->port;
+  }
+
+  public function getProcess() {
+    return $this->process;
+  }
+
+  public function getClient() {
+    return $this->client;
+  }
+
   public function currentUrl() {
     return $this->command("CurrentUrl");
   }
@@ -206,29 +218,8 @@ class Browser {
     return (bool)$this->invoke("visible", $this->findOne($xpath));
   }
 
-  // public function setProxy($options = []) {
-    // $options = array_merge([
-      // "host" => "localhost",
-      // "port" => 0,
-      // "user" => "",
-      // "pass" => "",
-    // ],
-    // $options
-  // );
-    // $this->command("SetProxy", [
-      // $options['host'],
-      // $options['port'],
-      // $options['user'],
-      // $options['pass']
-    // ]);
-  // }
-
-  // public function clearProxy() {
-    // $this->command("SetProxy");
-  // }
-
-  public function setCookies($cookie) {
-    $this->command("setCookies", [$cookie]);
+  public function setCookie($cookie) {
+    $this->command("SetCookie", [$cookie]);
   }
 
   public function getCookies() {
@@ -269,12 +260,14 @@ class Browser {
     if (is_resource($this->process)) {
       proc_terminate($this->process);
     }
+    $this->process = null;
   }
 
   protected function disconnect() {
     if (is_resource($this->client)) {
       fclose($this->client);
     }
+    $this->client = null;
   }
 
   public function registerShutdownHook() {

@@ -7,55 +7,140 @@ use PhpCapybaraWebkit\CapybaraWebkitDriver;
 
 describe("CapybaraWebkitDriver", function() {
 
-  $this->fixture_url = "http://localhost:8000/foo.html";
+  $this->foo_fixture_url = "http://localhost:8000/foo.html";
+  $this->php_foo_fixture_url = "http://localhost:8000/fixture.php";
 
   before(function() {
     $this->test_http_server = startTestHttpServer();
+    $browser = new Browser('/Library/Ruby/Gems/2.0.0/gems/capybara-webkit-1.3.1/bin/webkit_server');
+    $this->driver = new CapybaraWebkitDriver($browser);
+    $this->session = new Behat\Mink\Session($this->driver);
+    $this->driver->setSession($this->session);
+    $this->driver->start();
   });
 
   after(function() {
+    $this->driver = null;
     proc_terminate($this->test_http_server);
   });
 
   beforeEach(function() {
-    $browser = new Browser('/Library/Ruby/Gems/2.0.0/gems/capybara-webkit-1.3.1/bin/webkit_server');
-    $this->driver = new CapybaraWebkitDriver($browser);
-    $session = new Behat\Mink\Session($this->driver);
-    $this->driver->setSession($session);
-    $this->driver->start();
+    $this->driver->reset();
   });
 
-  afterEach(function() {
-    $this->driver = null;
+  describe("#setSession", function() {
+    after(function(){
+      $this->driver->setSession($this->session);
+    });
+
+    it("sets the session", function() {
+      $new_session = new Behat\Mink\Session($this->driver);
+      $this->driver->setSession($new_session);
+      expect($this->driver->getSession())->toBe($new_session);
+    });
   });
 
-  describe("#setSession", function() {});
+  describe("#getSession", function() {
+    it("gets the session", function() {
+      expect($this->driver->getSession())->toBe($this->session);
+    });
+  });
 
-  describe("#start", function() {});
+  describe("#start", function() {
+    context("when the driver is stopped", function() {
+      before(function(){ $this->driver->stop(); });
+      it("should start", function() {
+        $this->driver->start();
+        expect(is_resource($this->driver->getBrowser()->getClient()))->toBeTrue();
+        expect(is_resource($this->driver->getBrowser()->getProcess()))->toBeTrue();
+      });
+    });
 
-  describe("#isStarted", function() {});
+    context("when the driver is started", function() {
+      it("should have no effect", function() {
+        $client = $this->driver->getBrowser()->getClient();
+        $process = $this->driver->getBrowser()->getProcess();
+        $this->driver->start();
+        expect($this->driver->getBrowser()->getClient())->toBe($client);
+        expect($this->driver->getBrowser()->getProcess())->toBe($process);
+      });
+    });
+  });
 
-  describe("#stop", function() {});
+  describe("#isStarted", function() {
+    context("when the driver is started", function(){
+      it("is true", function() {
+        expect($this->driver->isStarted())->toBeTrue();
+      });
+    });
 
-  describe("#reset", function() {});
+    context("when the driver is stopped", function(){
+      before(function() { $this->driver->stop(); });
+      after(function() { $this->driver->start(); });
+
+      it("is false", function() {
+        expect($this->driver->isStarted())->toBeFalse();
+      });
+    });
+  });
+
+  describe("#stop", function() {
+    before(function() {
+      $this->driver->stop();
+    });
+
+    after(function() {
+      $this->driver->start();
+    });
+
+    it("stop the driver", function() {
+      expect($this->driver->getBrowser()->getClient())->toBeNull();
+      expect($this->driver->getBrowser()->getProcess())->toBeNull();
+    });
+  });
+
+  describe("#reset", function() {
+    describe("request headers", function() {
+      it("get reset", function() {
+        $this->driver->setRequestHeader('X-Testing', 'testing');
+        $this->driver->visit($this->php_foo_fixture_url);
+        expect($this->driver->getContent())->toContain('HTTP_X_TESTING');
+        $this->driver->reset();
+        $this->driver->visit($this->php_foo_fixture_url);
+        expect($this->driver->getContent())->notToContain('HTTP_X_TESTING');
+      });
+    });
+
+    describe("cookies", function() {
+      it("get reset", function() {
+        $this->driver->visit($this->php_foo_fixture_url);
+        $this->driver->setCookie('reset_me', 'please');
+        $this->driver->visit($this->php_foo_fixture_url);
+        expect($this->driver->getContent())->toContain('reset_me');
+        $this->driver->reset();
+        $this->driver->visit($this->php_foo_fixture_url);
+        expect($this->driver->getContent())->notToContain('reset_me');
+      });
+    });
+  });
 
   describe("#visit", function() {
     it("returns an empty string", function() {
-      $response = $this->driver->visit($this->fixture_url);
+      $response = $this->driver->visit($this->foo_fixture_url);
       expect($response)->toBeNull();
     });
   });
 
   describe("#getCurrentUrl", function() {
     it("returns the current url", function() {
-      $this->driver->visit($this->fixture_url);
+      $this->driver->visit($this->foo_fixture_url);
       expect($this->driver->getCurrentUrl())->toContain("foo.html");
     });
   });
 
   describe("#reload", function() {
     it("reloads the page", function() {
-      $this->driver->visit($this->fixture_url);
+      $this->driver->visit($this->foo_fixture_url);
       $this->driver->executeScript("document.write('new content');");
       expect($this->driver->getContent())->toContain("new content");
       $this->driver->reload();
@@ -65,7 +150,7 @@ describe("CapybaraWebkitDriver", function() {
 
   describe("#forward", function() {
     it("goes forward", function() {
-      $this->driver->visit($this->fixture_url);
+      $this->driver->visit($this->foo_fixture_url);
       $this->driver->click("//a[@id='link-to-bar']");
       expect($this->driver->getContent())->toContain("bar page");
       $this->driver->back();
@@ -77,7 +162,7 @@ describe("CapybaraWebkitDriver", function() {
 
   describe("#back", function() {
     it("goes back", function() {
-      $this->driver->visit($this->fixture_url);
+      $this->driver->visit($this->foo_fixture_url);
       $this->driver->click("//a[@id='link-to-bar']");
       expect($this->driver->getContent())->toContain("bar page");
       $this->driver->back();
@@ -112,13 +197,40 @@ describe("CapybaraWebkitDriver", function() {
     });
   });
 
-  describe("#setRequestHeader", function() {});
+  describe("#setRequestHeader", function() {
+    it("sets a request header", function() {
+      $this->driver->setRequestHeader('X-Testing', 'testing!!!');
+      $this->driver->visit($this->php_foo_fixture_url);
+      expect($this->driver->getContent())->toContain("X_TESTING");
+      expect($this->driver->getContent())->toContain("testing!!!");
+    });
+  });
 
-  describe("#getResponseHeaders", function() {});
+  describe("#getResponseHeaders", function() {
+    it("returns the response headers", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      expect($this->driver->getResponseHeaders()['Content-Type'])->toBe("text/html; charset=UTF-8");
+    });
+  });
 
-  describe("#setCookie", function() {});
+  describe("#setCookie", function() {
+    it("sets a cookie", function() {
+      $this->driver->visit($this->php_foo_fixture_url);
+      $this->driver->setCookie("client_cookie", "I_am_browser_cookie");
+      $this->driver->visit($this->php_foo_fixture_url);
+      expect($this->driver->getContent())->toContain("I_am_browser_cookie");
+    });
+  });
 
-  describe("#getCookie", function() {});
+  describe("#getCookie", function() {
+    it("get the cookie", function() {
+      $this->driver->visit($this->php_foo_fixture_url);
+      expect($this->driver->getCookie('server_cookie_1'))->toBe("one");
+      expect($this->driver->getCookie('server_cookie_2'))->toBe("two");
+      expect($this->driver->getCookie('server_cookie_3'))->toBe("three");
+
+    });
+  });
 
   describe("#getStatusCode", function() {
     it("returns the status code of the request", function() {
@@ -130,7 +242,7 @@ describe("CapybaraWebkitDriver", function() {
   describe("#getContent", function() {
     context("when the driver is visiting a page", function() {
       it("returns the html source of the page", function() {
-        $this->driver->visit($this->fixture_url);
+        $this->driver->visit($this->foo_fixture_url);
         expect($this->driver->getContent())->toContain("find me: body");
       });
 
@@ -177,7 +289,7 @@ describe("CapybaraWebkitDriver", function() {
 
   describe("#click", function() {
     it("clicks on the element", function() {
-      $this->driver->visit($this->fixture_url);
+      $this->driver->visit($this->foo_fixture_url);
       $this->driver->click("//a[@id='link-to-bar']");
       expect($this->driver->getCurrentUrl())->toContain("bar.html");
     });

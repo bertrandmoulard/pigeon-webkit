@@ -12,16 +12,20 @@ class CapybaraWebkitDriver implements \Behat\Mink\Driver\DriverInterface {
   private $browser;
   private $session;
 
-  public function getBrowser() {
-    return $this->browser;
-  }
-
   public function __construct(Browser $browser) {
     $this->browser = $browser;
   }
 
+  public function getBrowser() {
+    return $this->browser;
+  }
+
   public function setSession(Session $session) {
     $this->session = $session;
+  }
+
+  public function getSession() {
+    return $this->session;
   }
 
   public function start() {
@@ -83,11 +87,19 @@ class CapybaraWebkitDriver implements \Behat\Mink\Driver\DriverInterface {
   }
 
   public function setCookie($name, $value = null) {
-    $this->browser->setCookies($name, $value);
+    $url_bits = parse_url($this->getCurrentUrl());
+    $this->browser->setCookie("$name=$value; domain={$url_bits['host']}; path={$url_bits['path']}");
   }
 
   public function getCookie($name) {
-    // TODO
+    foreach($this->browser->getCookies() as $cookie_line) {
+      $elements = explode(";", $cookie_line);
+      $cookie_bits = explode("=", $elements[0]);
+      if ($cookie_bits[0] == $name) {
+        return $cookie_bits[1];
+      }
+    }
+    return null;
   }
 
   public function getStatusCode() {
