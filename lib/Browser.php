@@ -6,6 +6,7 @@ class Browser {
   protected $client;
   protected $port;
   protected $process;
+  protected $server_path;
 
   public function __construct() {
     $this->start();
@@ -21,12 +22,6 @@ class Browser {
   public function stop() {
     $this->killServer();
     $this->disconnect();
-  }
-
-  public function disconnect() {
-    if (is_resource($this->client)) {
-      fclose($this->client);
-    }
   }
 
   public function currentUrl() {
@@ -48,25 +43,6 @@ class Browser {
 
   public function visit($url) {
     return $this->command("Visit", [$url]);
-  }
-
-  protected function updateConsoleLog($throwExceptionOnJSError = false) {
-    if ($throwExceptionOnJSError) {
-      $throwException = false;
-      $newLog = $this->consoleMessage();
-      $logDiff = [];
-      for ($i = count($this->consoleLog); $i < count($newLog); $i++) {
-        $logDiff[] = $newLog[$i];
-        if ($newLog != null && is_array($newLog) && array_key_exists('line_number', $newLog[$i]) && array_key_exists('message', $newLog[$i]) && strpos($newLog[$i]['message'], 'Error:') !== FALSE) {
-          $throwException = true;
-        }
-      }
-      if ($throwException) {
-        throw new \Behat\Mink\Exception\DriverException('JavaScript error occured: ' . print_r($logDiff, 1));
-      }
-    }
-
-    $this->consoleLog = $this->consoleMessage();
   }
 
   public function consoleMessage() {
@@ -92,7 +68,7 @@ class Browser {
     $server_path = '/Library/Ruby/Gems/2.0.0/gems/capybara-webkit-1.3.1/bin/webkit_server';
 
     if (!file_exists($server_path)) {
-      throw new \RuntimeException("Binary webkit_server does not exist.");
+      throw new \RuntimeException("webkit_server not found");
     }
 
     $descriptorspec = [
@@ -128,7 +104,7 @@ class Browser {
   public function invoke() {
     $arguments = func_get_args();
     $invokeCommand = array_shift($arguments);
-    array_unshift($arguments, "true"); // set allowUnattached to TRUE
+    array_unshift($arguments, "true");
     array_unshift($arguments, $invokeCommand);
     return $this->command("Node", $arguments);
   }
@@ -266,6 +242,25 @@ class Browser {
     return $result;
   }
 
+  protected function updateConsoleLog($throwExceptionOnJSError = false) {
+    if ($throwExceptionOnJSError) {
+      $throwException = false;
+      $newLog = $this->consoleMessage();
+      $logDiff = [];
+      for ($i = count($this->consoleLog); $i < count($newLog); $i++) {
+        $logDiff[] = $newLog[$i];
+        if ($newLog != null && is_array($newLog) && array_key_exists('line_number', $newLog[$i]) && array_key_exists('message', $newLog[$i]) && strpos($newLog[$i]['message'], 'Error:') !== FALSE) {
+          $throwException = true;
+        }
+      }
+      if ($throwException) {
+        throw new \Behat\Mink\Exception\DriverException('JavaScript error occured: ' . print_r($logDiff, 1));
+      }
+    }
+
+    $this->consoleLog = $this->consoleMessage();
+  }
+
   public function __destruct() {
     $this->killServer();
   }
@@ -276,28 +271,34 @@ class Browser {
     }
   }
 
+  protected function disconnect() {
+    if (is_resource($this->client)) {
+      fclose($this->client);
+    }
+  }
+
   public function registerShutdownHook() {
     $this->killServer();
   }
 
   protected function check() {
-    $error = trim(fgets($this->client));
-    if ($error != "ok") {
+    $status = trim(fgets($this->client));
+    if ($status != "ok") {
       throw new \Exception($this->readResponse($this->client));
     }
   }
 
   protected function readResponse() {
     $data = "";
-    $nread = trim(fgets($this->client));
+    $length = trim(fgets($this->client));
 
-    if ($nread == 0) {
+    if ($length == 0) {
       return $data;
     }
 
     $read = 0;
-    while ($read < $nread) {
-      $tmp = fread($this->client, $nread);
+    while ($read < $length) {
+      $tmp = fread($this->client, $length);
       $read += strlen($tmp);
       $data .= $tmp;
     }

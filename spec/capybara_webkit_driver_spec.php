@@ -5,25 +5,21 @@ require __DIR__ . "/spec_helper.php";
 use PhpCapybaraWebkit\Browser;
 use PhpCapybaraWebkit\CapybaraWebkitDriver;
 
-describe("Browser", function() {
+describe("CapybaraWebkitDriver", function() {
 
-  $this->fixture_url = "file:///". __DIR__ ."/fixtures/foo.html";
+  $this->fixture_url = "http://localhost:8000/foo.html";
 
   before(function() {
-    var_dump("starting it");
     $this->test_http_server = startTestHttpServer();
-    var_dump($this->test_http_server);
   });
 
   after(function() {
-    var_dump("killing it");
-    var_dump($this->test_http_server);
     proc_terminate($this->test_http_server);
   });
 
   beforeEach(function() {
-    $b = new Browser('/Library/Ruby/Gems/2.0.0/gems/capybara-webkit-1.3.1/bin/webkit_server');
-    $this->driver = new CapybaraWebkitDriver($b);
+    $browser = new Browser('/Library/Ruby/Gems/2.0.0/gems/capybara-webkit-1.3.1/bin/webkit_server');
+    $this->driver = new CapybaraWebkitDriver($browser);
     $session = new Behat\Mink\Session($this->driver);
     $this->driver->setSession($session);
     $this->driver->start();
@@ -78,11 +74,9 @@ describe("Browser", function() {
   describe("#getCookie", function() {});
 
   describe("#getStatusCode", function() {
-    context("when the request is successful", function() {
-      it("is 200", function() {
-        $this->driver->visit("https://etsy.com");
-        expect($this->driver->getStatusCode())->toBe(200);
-      });
+    it("returns the status code of the request", function() {
+      $this->driver->visit("http://localhost:8000/foo.html");
+      expect($this->driver->getStatusCode())->toBe(200);
     });
   });
 
@@ -134,7 +128,13 @@ describe("Browser", function() {
 
   describe("#isSelected", function() {});
 
-  describe("#click", function() {});
+  describe("#click", function() {
+    it("clicks on the element", function() {
+      $this->driver->visit($this->fixture_url);
+      $this->driver->click("//a[@id='link-to-bar']");
+      expect($this->driver->getCurrentUrl())->toContain("bar.html");
+    });
+  });
 
   describe("#doubleClick", function() {});
 
@@ -169,9 +169,6 @@ describe("Browser", function() {
   describe("#maximizeWindow", function() {});
 
   describe("#submitForm", function() {});
-
-
-
 
   describe("it works", function() {
     it("overall", function() {
