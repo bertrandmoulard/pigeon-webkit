@@ -53,17 +53,64 @@ describe("CapybaraWebkitDriver", function() {
     });
   });
 
-  describe("#reload", function() {});
+  describe("#reload", function() {
+    it("reloads the page", function() {
+      $this->driver->visit($this->fixture_url);
+      $this->driver->executeScript("document.write('new content');");
+      expect($this->driver->getContent())->toContain("new content");
+      $this->driver->reload();
+      expect($this->driver->getContent())->notToContain("new content");
+    });
+  });
 
-  describe("#forward", function() {});
+  describe("#forward", function() {
+    it("goes forward", function() {
+      $this->driver->visit($this->fixture_url);
+      $this->driver->click("//a[@id='link-to-bar']");
+      expect($this->driver->getContent())->toContain("bar page");
+      $this->driver->back();
+      expect($this->driver->getContent())->notToContain("bar page");
+      $this->driver->forward();
+      expect($this->driver->getContent())->toContain("bar page");
+    });
+  });
 
-  describe("#back", function() {});
+  describe("#back", function() {
+    it("goes back", function() {
+      $this->driver->visit($this->fixture_url);
+      $this->driver->click("//a[@id='link-to-bar']");
+      expect($this->driver->getContent())->toContain("bar page");
+      $this->driver->back();
+      expect($this->driver->getContent())->toContain("foo page");
+    });
+  });
 
-  describe("#setBasicAuth", function() {});
+  describe("#setBasicAuth", function() {
+    it("throws an UnsupportedDriverActionException", function() {
+      $callable = function() {
+        $this->driver->setBasicAuth('good', 'morning');
+      };
+      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+    });
+  });
 
-  describe("#switchToWindow", function() {});
+  describe("#switchToWindow", function() {
+    it("throws an UnsupportedDriverActionException", function() {
+      $callable = function() {
+        $this->driver->switchToWindow();
+      };
+      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+    });
+  });
 
-  describe("#switchToIFrame", function() {});
+  describe("#switchToIFrame", function() {
+    it("throws an UnsupportedDriverActionException", function() {
+      $callable = function() {
+        $this->driver->switchToIFrame();
+      };
+      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+    });
+  });
 
   describe("#setRequestHeader", function() {});
 
@@ -175,7 +222,6 @@ describe("CapybaraWebkitDriver", function() {
       $this->driver->visit("https://etsy.com");
       $one = $this->driver->click("//button[@value='Search']");
       expect($this->driver->getContent())->toContain("Accessories");
-
     });
   });
 });
