@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . "/spec_helper.php";
+require __DIR__ . "/../spec_helper.php";
 
 use PhpCapybaraWebkit\Browser;
 use PhpCapybaraWebkit\CapybaraWebkitDriver;
