@@ -255,7 +255,12 @@ describe("CapybaraWebkitDriver", function() {
     });
   });
 
-  describe("#getScreenshot", function() {});
+  describe("#getScreenshot", function() {
+    it("return the data for the screenshot", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      expect($this->driver->getScreenShot())->notToBeNull();;
+    });
+  });
 
   describe("#getWindowNames", function() {});
 

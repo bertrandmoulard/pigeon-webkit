@@ -291,9 +291,9 @@ JS;
     $dimensions = $this->browser->evaluateScript('document.body.offsetWidth + "," + document.body.offsetHeight');
     list($width, $height) = explode(',', $dimensions, 2);
     $this->browser->render($file, $width, $height);
-    $screenShotData = file_get_contents($file);
+    $png_data = file_get_contents($file);
     unlink($file);
-    return $screenShotData;
+    return $png_data;
   }
 
   public function resizeWindow($width, $height, $name = null) {
