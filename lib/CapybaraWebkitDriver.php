@@ -120,17 +120,21 @@ class CapybaraWebkitDriver implements \Behat\Mink\Driver\DriverInterface {
 
     return $elements;
   }
+
   public function getTagName($xpath) {
-    $this->browser->getTagName($xpath);
+    return $this->browser->invoke("tagName", $this->browser->findOne($xpath));
   }
 
   public function getText($xpath) {
-    $node = $this->browser->findOne($xpath);
-    return $this->browser->invoke("text", $node);
+    return $this->browser->invoke("text", $this->browser->findOne($xpath));
   }
 
   public function getHtml($xpath) {
-    // TODO
+    return $this->browser->invoke("getInnerHTML", $this->browser->findOne($xpath));
+  }
+
+  public function getOuterHtml($xpath) {
+    throw new UnsupportedDriverActionException('iFrame management is not supported by %s', $this);
   }
 
   public function getAttribute($xpath, $attr) {

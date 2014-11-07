@@ -58,7 +58,8 @@ class Browser {
   }
 
   public function getTagName($xpath) {
-    $this->invoke("tagName", $this->findOne($xpath));
+    $one = $this->findOne($xpath);
+    $this->invoke("tagName", $one);
   }
 
   public function setValue($xpath, $value) {

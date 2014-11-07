@@ -7,7 +7,7 @@ require __DIR__ . "/../lib/CapybaraWebkitDriver.php";
 function startTestHttpServer() {
   $command = sprintf('php -S %s:%d -t %s',
                               'localhost',
-                              '8000',
+                              '8419',
                               __DIR__ . "/fixtures");
   $pipes = [];
 

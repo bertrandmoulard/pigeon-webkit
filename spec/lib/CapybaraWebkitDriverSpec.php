@@ -7,8 +7,8 @@ use PigeonWebkit\CapybaraWebkitDriver;
 
 describe("CapybaraWebkitDriver", function() {
 
-  $this->foo_fixture_url = "http://localhost:8000/foo.html";
-  $this->php_foo_fixture_url = "http://localhost:8000/fixture.php";
+  $this->foo_fixture_url = "http://localhost:8419/foo.html";
+  $this->php_foo_fixture_url = "http://localhost:8419/fixture.php";
 
   before(function() {
     $this->test_http_server = startTestHttpServer();
@@ -234,7 +234,7 @@ describe("CapybaraWebkitDriver", function() {
 
   describe("#getStatusCode", function() {
     it("returns the status code of the request", function() {
-      $this->driver->visit("http://localhost:8000/foo.html");
+      $this->driver->visit($this->foo_fixture_url);
       expect($this->driver->getStatusCode())->toBe(200);
     });
   });
@@ -261,17 +261,51 @@ describe("CapybaraWebkitDriver", function() {
 
   describe("#getWindowName", function() {});
 
-  describe("#find", function() {});
+  describe("#find", function() {
+    it("finds elements with specified XPath query and returns an array of NodeElements", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      $find_me_divs = $this->driver->find("//div[@class='find-me']");
+      expect(count($find_me_divs))->toBe(2);;
+      expect(get_class($find_me_divs[0]))->toBe("Behat\Mink\Element\NodeElement");
+    });
+  });
 
-  describe("#getTagName", function() {});
+  describe("#getTagName", function() {
+    it("returns the tag name of the element found by the query", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      expect($this->driver->getTagName("//*[@class='find-me-tag-name']"))->toBe("span");
+    });
+  });
 
-  describe("#getText", function() {});
+  describe("#getText", function() {
+    it("returns the text content of the matched element", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      expect($this->driver->getText("//div[@class='find-me-text']"))->toBe("the text");
+    });
+  });
 
-  describe("#getHtml", function() {});
+  describe("#getHtml", function() {
+    it("returns the hmtl content of the matched element", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      expect($this->driver->getHtml("//div[@class='find-me-html']"))->toBe("<span>html content</span>");
+    });
+  });
 
-  describe("#getOuterHtml", function() {});
+  describe("#getOuterHtml", function() {
+    it("throws an UnsupportedDriverActionException", function() {
+      $callable = function() {
+        $this->driver->getOuterHtml("anything");
+      };
+      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+    });
+  });
 
-  describe("#getAttribute", function() {});
+  describe("#getAttribute", function() {
+    it("returns the value of the attributes", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      expect($this->driver->getAttribute("//div[@class='find-me-attribute']", "foo"))->toBe("bar");
+    });
+  });
 
   describe("#getValue", function() {});
 
