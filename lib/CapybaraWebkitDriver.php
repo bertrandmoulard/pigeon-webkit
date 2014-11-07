@@ -161,7 +161,7 @@ class CapybaraWebkitDriver implements \Behat\Mink\Driver\DriverInterface {
 
   public function isChecked($xpath) {
     $node = $this->browser->findOne($xpath);
-    return $this->browser->invoke("attribute", $node, "checked");
+    return $this->browser->invoke("attribute", $node, "checked") == "true" ? true : false;
   }
 
   public function selectOption($xpath, $value, $multiple = false) {

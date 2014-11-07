@@ -312,15 +312,57 @@ describe("CapybaraWebkitDriver", function() {
     });
   });
 
-  describe("#getValue", function() {});
+  describe("#getValue", function() {
+    it("returns the value of the matched element", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      expect($this->driver->getValue("//input[@class='find-me-value']"))->toBe("foo");
+    });
+  });
 
-  describe("#setValue", function() {});
+  describe("#setValue", function() {
+    it("sets the value of the matched element", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      $this->driver->setValue("//input[@class='find-me-value']", "bar");
+      expect($this->driver->getValue("//input[@class='find-me-value']"))->toBe("bar");
+    });
+  });
 
-  describe("#check", function() {});
+  describe("#check", function() {
+    it("checks the matched element", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      $this->driver->check("//input[@class='find-me-unchecked']");
+      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeTrue();
+    });
+  });
 
-  describe("#uncheck", function() {});
+  describe("#uncheck", function() {
+    it("unchecks the matched element", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      $this->driver->check("//input[@class='find-me-unchecked']");
+      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeTrue();
+      $this->driver->uncheck("//input[@class='find-me-unchecked']");
+      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeFalse();
+    });
+  });
 
-  describe("#isChecked", function() {});
+  describe("#isChecked", function() {
+    beforeEach(function() {
+      $this->driver->visit($this->foo_fixture_url);
+    });
+
+    context("when the matching element is checked", function() {
+      it("returns true", function() {
+        $this->driver->check("//input[@class='find-me-unchecked']");
+        expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeTrue();
+      });
+    });
+
+    context("when the matching element is not checked", function() {
+      it("returns true", function() {
+        expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeFalse();
+      });
+    });
+  });
 
   describe("#selectOption", function() {});
 
