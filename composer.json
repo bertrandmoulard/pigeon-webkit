@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "require": {
     "php": ">=5.3",
-    "behat/mink": "1.4.*@stable"
+    "behat/mink": "1.5.*@stable"
+  }, 
+  "autoload": {
+    "psr-4": { "PigeonWebkit\\": "lib/" }
   }
 }
