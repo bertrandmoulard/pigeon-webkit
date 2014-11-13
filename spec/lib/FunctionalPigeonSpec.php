@@ -30,7 +30,11 @@ describe("FunctionalPigeon", function() {
     });
 
     it("supports complex selectors", function() {
-      // expect(count($this->pigeon->find("")))->toBe(1);
+      expect($this->pigeon->getText("div:nth-child(2)"))->toBe("find me: body");
+      expect($this->pigeon->getText("div:contains('body')"))->toBe("find me: body");
+      expect($this->pigeon->getText("body > div:contains('body')"))->toBe("find me: body");
+      expect($this->pigeon->getText("div:contains('body') + div:contains('class')"))->toBe("find me: css class");
+      expect($this->pigeon->getTagName("div:contains('find me: css id') + *"))->toBe("a");
     });
   });
 
