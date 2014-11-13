@@ -478,12 +478,4 @@ describe("CapybaraWebkitDriver", function() {
       expect($this->driver->getContent())->toContain("bar page");
     });
   });
-
-  describe("it works", function() {
-    it("overall", function() {
-      $this->driver->visit("https://etsy.com");
-      $one = $this->driver->click("//button[@value='Search']");
-      expect($this->driver->getContent())->toContain("Accessories");
-    });
-  });
 });
