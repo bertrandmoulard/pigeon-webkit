@@ -364,9 +364,24 @@ describe("CapybaraWebkitDriver", function() {
     });
   });
 
-  describe("#selectOption", function() {});
+  describe("#selectOption", function() {
+    it("selects the option", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      expect($this->driver->isSelected("//option[@value='val_1']"))->toBeTrue();
+      expect($this->driver->isSelected("//option[@value='val_2']"))->toBeFalse();
+      $this->driver->selectOption("//select[@name='dropdown']", "val_2");
+      expect($this->driver->isSelected("//option[@value='val_1']"))->toBeFalse();
+      expect($this->driver->isSelected("//option[@value='val_2']"))->toBeTrue();
+    });
+  });
 
-  describe("#isSelected", function() {});
+  describe("#isSelected", function() {
+    it("returns true is the element is selected, false otherwise", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      expect($this->driver->isSelected("//option[@value='val_1']"))->toBeTrue();
+      expect($this->driver->isSelected("//option[@value='val_2']"))->toBeFalse();
+    });
+  });
 
   describe("#click", function() {
     it("clicks on the element", function() {
@@ -382,7 +397,23 @@ describe("CapybaraWebkitDriver", function() {
 
   describe("#attachFile", function() {});
 
-  describe("#isVisible", function() {});
+  describe("#isVisible", function() {
+    beforeEach(function() {
+      $this->driver->visit($this->foo_fixture_url);
+    });
+
+    context("when the node is visible", function() {
+      it("is true", function() {
+        expect($this->driver->isVisible("//div[@class='visible']"))->toBeTrue();
+      });
+    });
+
+    context("when the node is invisible", function() {
+      it("is false", function() {
+        expect($this->driver->isVisible("//div[@class='invisible']"))->toBeFalse();
+      });
+    });
+  });
 
   describe("#mouseOver", function() {});
 
@@ -398,17 +429,55 @@ describe("CapybaraWebkitDriver", function() {
 
   describe("#dragTo", function() {});
 
-  describe("#executeScript", function() {});
+  describe("#executeScript", function() {
+    it("executes the script", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      $this->driver->executeScript("document.write('content from executed script')");
+      expect($this->driver->getContent())->toContain("content from executed script");
+    });
+  });
 
-  describe("#evaluateScript", function() {});
+  describe("#evaluateScript", function() {
+    it("evaluates the script", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      expect($this->driver->evaluateScript("'test' == 'test' ? 'yes' : 'no'"))->toBe("yes");
+    });
+  });
 
-  describe("#wait", function() {});
+  describe("#wait", function() {
+    it("throws an UnsupportedDriverActionException", function() {
+      $callable = function() {
+        $this->driver->wait(2, "");
+      };
+      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+    });
+  });
 
-  describe("#resizeWindow", function() {});
+  describe("#resizeWindow", function() {
+    it("throws an UnsupportedDriverActionException", function() {
+      $callable = function() {
+        $this->driver->resizeWindow(10, 10);
+      };
+      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+    });
+  });
 
-  describe("#maximizeWindow", function() {});
+  describe("#maximizeWindow", function() {
+    it("throws an UnsupportedDriverActionException", function() {
+      $callable = function() {
+        $this->driver->maximizeWindow();
+      };
+      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+    });
+  });
 
-  describe("#submitForm", function() {});
+  describe("#submitForm", function() {
+    it("submits the form", function() {
+      $this->driver->visit($this->foo_fixture_url);
+      $this->driver->submitForm("//form");
+      expect($this->driver->getContent())->toContain("bar page");
+    });
+  });
 
   describe("it works", function() {
     it("overall", function() {

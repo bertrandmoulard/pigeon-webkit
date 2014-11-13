@@ -127,7 +127,6 @@ class Browser {
         "element not found"
       );
     }
-
   }
 
   public function invoke() {
@@ -136,10 +135,6 @@ class Browser {
     array_unshift($arguments, "true");
     array_unshift($arguments, $invokeCommand);
     return $this->command("Node", $arguments);
-  }
-
-  public function resizeWindow($width, $height, $handle = null) {
-    return $this->command('ResizeWindow', [$handle, intval($width), intval($height)]);
   }
 
   public function statusCode() {
@@ -170,7 +165,6 @@ class Browser {
     if (empty($ret)) {
       return [];
     }
-
     return explode(",", $ret);
   }
 

@@ -171,6 +171,16 @@ class CapybaraWebkitDriver implements \Behat\Mink\Driver\DriverInterface {
     $this->browser->invoke("selectOption", $node);
   }
 
+  public function isSelected($xpath) {
+    $node = $this->browser->findOne($xpath);
+    return $this->browser->invoke("selected", $node) == "true" ? true : false;
+  }
+
+  public function submitForm($xpath) {
+    $node = $this->browser->findOne($xpath);
+    return $this->browser->invoke("submit", $node);
+  }
+
   public function click($xpath) {
     $this->browser->click($xpath);
   }
@@ -189,7 +199,7 @@ class CapybaraWebkitDriver implements \Behat\Mink\Driver\DriverInterface {
 
   public function isVisible($xpath) {
     $node = $this->browser->findOne($xpath);
-    return $this->browser->invoke("visible", $node);
+    return $this->browser->invoke("visible", $node) == "true" ? true : false;
   }
 
   public function mouseOver($xpath) {
@@ -276,14 +286,7 @@ JS;
   }
 
   public function wait($time, $condition) {
-    $script = "$condition";
-    $start = 1000 * microtime(true);
-    $end = $start + $time;
-
-    while (1000 * microtime(true) < $end && !$this->browser->evaluateScript($script)) {
-      sleep(0.1);
-    }
-
+    throw new UnsupportedDriverActionException('Basic auth is not supported by this %s', $this);
   }
 
   public function getScreenshot() {
@@ -297,6 +300,10 @@ JS;
   }
 
   public function resizeWindow($width, $height, $name = null) {
-    return $this->browser->resizeWindow($width, $height, $name);
+    throw new UnsupportedDriverActionException('Basic auth is not supported by this %s', $this);
+  }
+
+  public function maximizeWindow($name = null) {
+    throw new UnsupportedDriverActionException('Basic auth is not supported by this %s', $this);
   }
 }
