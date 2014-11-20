@@ -13,6 +13,7 @@ class FunctionalPigeon extends CapybaraWebkitDriver {
     $this->browser = new PigeonBrowser();
     parent::__construct($this->browser);
     $this->setSession(new Session($this));
+    $this->start();
   }
 
   public function setXPathMode($bool) {

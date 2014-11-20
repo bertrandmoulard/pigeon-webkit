@@ -11,7 +11,6 @@ describe("FunctionalPigeon", function() {
   before(function() {
     $this->test_http_server = startTestHttpServer();
     $this->pigeon = new FunctionalPigeon();
-    $this->pigeon->start();
   });
 
   after(function() {
