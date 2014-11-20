@@ -52,10 +52,11 @@ The css to xpath translation is handled by [the symphony CssSelector component] 
 $pigeon = new PigeonWebkit\FunctionalPigeon();
 $pigeon->visit("https://etsy.com");
 print_r($pigeon->body()); // HTML content of etsy.com
-$pigeon->click("a#sign-in");
+$pigeon->click("a#sign-in"); // opens the sign in modal
+// ...etc
 ```
 
-By default, Pigeon Webkit accepts css selector. But it also has a xpath mode.
+By default, Pigeon Webkit accepts css selectors. But it also has an xpath mode.
 
 ```php
 $pigeon->setXPathMode(true);
@@ -81,6 +82,8 @@ describe("Visiting a URL", function() {
   });
 });
 ```
+
+For more examples, take a look at the specs for [FunctionalPigeon] (https://github.com/bertrandmoulard/pigeon-webkit/blob/master/spec/lib/FunctionalPigeonSpec.php) and its base class, [CapybaraWebkiDriver] (https://github.com/bertrandmoulard/pigeon-webkit/blob/master/spec/lib/CapybaraWebkitDriverSpec.php).
 
 Some of the available methods
 
