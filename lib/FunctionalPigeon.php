@@ -24,6 +24,10 @@ class FunctionalPigeon extends CapybaraWebkitDriver {
   public function saveScreenShot($path) {
     file_put_contents($path, $this->getScreenShot());
   }
+
+  public function body() {
+    return $this->getContent();
+  }
 }
 
 class PigeonBrowser extends Browser {

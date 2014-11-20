@@ -71,4 +71,11 @@ describe("FunctionalPigeon", function() {
       exec('rm /tmp/tmp.png');
     });
   });
+
+  describe("#body", function() {
+    it("returns the html source of the page", function() {
+      $this->pigeon->visit($this->foo_fixture_url);
+      expect($this->pigeon->body())->toContain("find me: body");
+    });
+  });
 });
