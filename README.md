@@ -25,16 +25,10 @@ or
 $ sudo gem install capybara-webkit -v "1.3.1"
 ```
 
- * Run either of the following commands, depending on your environment:
+ * Run the following command:
 
 ```
 $ php composer.phar global require etsy/pigeon-webkit:dev-master
-```
-
-* Edit your `~/.bash_profile` or `~/.profile` and add:
-
-```
-export PATH=$HOME/.composer/vendor/bin:$PATH
 ```
 
 ## How it works
