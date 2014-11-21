@@ -28,7 +28,6 @@ $ sudo gem install capybara-webkit -v "1.3.1"
  * Run either of the following commands, depending on your environment:
 
 ```
-$ composer global require etsy/pigeon-webkit:dev-master
 $ php composer.phar global require etsy/pigeon-webkit:dev-master
 ```
 
