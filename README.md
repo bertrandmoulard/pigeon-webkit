@@ -1,7 +1,7 @@
 Pigeon Webkit
 =============
 
-Functional testing tool for PHP built on top of [https://github.com/thoughtbot/capybara-webkit](capybara-webkit)
+Functional testing tool for PHP built on top of [capybara-webkit](https://github.com/thoughtbot/capybara-webkit)
 
  * [Installation](#installation)
  * [How it works](#how-it-works)
