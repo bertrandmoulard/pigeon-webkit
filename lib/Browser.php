@@ -53,6 +53,10 @@ class Browser {
     return exec('gem environment | grep INSTALLATION');
   }
 
+  public function ignoreSslErrors() {
+    $this->command("IgnoreSslErrors");
+}
+
   public function currentUrl() {
     return $this->command("CurrentUrl");
   }

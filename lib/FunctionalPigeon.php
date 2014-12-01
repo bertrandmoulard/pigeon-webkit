@@ -28,6 +28,10 @@ class FunctionalPigeon extends CapybaraWebkitDriver {
   public function body() {
     return $this->getContent();
   }
+
+  public function ignoreSslErrors() {
+    $this->browser->ignoreSslErrors();
+  }
 }
 
 class PigeonBrowser extends Browser {
