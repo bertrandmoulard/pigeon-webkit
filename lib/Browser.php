@@ -220,7 +220,6 @@ class Browser {
     $this->invoke("mouseup", $this->findOne($xpath));
   }
 
-
   public function mousedown($xpath) {
     $this->invoke("mousedown", $this->findOne($xpath));
   }
