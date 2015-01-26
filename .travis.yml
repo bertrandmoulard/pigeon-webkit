@@ -1,5 +1,7 @@
 language: php
 
+sudo: false
+
 php:
   - 5.6
   - 5.5
@@ -15,4 +17,4 @@ before_script:
   - composer self-update
   - composer install
 
-script: ./bin/pho -a --reporter spec
+script: ./vendor/bin/pho -a --reporter spec
