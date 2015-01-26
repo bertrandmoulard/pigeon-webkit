@@ -10,7 +10,7 @@ Functional testing tool for PHP built on top of [capybara-webkit](https://github
 ## Installation
 
 The following instructions outline installation using Composer. If you don't
-have Composer, you can download it from [http://getcomposer.org/](http://getcomposer.org/)
+have Composer, you can download it from [https://getcomposer.org/](https://getcomposer.org/)
 
  * Install QT following these [instructions] (https://github.com/thoughtbot/capybara-webkit/wiki/Installing-Qt-and-compiling-capybara-webkit).
  * Install capybara-webkit
@@ -37,7 +37,7 @@ capybara-webkit provides a headless web browser (built on QT Webkit). When the b
 
 FunctionalPigeon is extending CapybaraWebkitDriver, which is an implementation of Behat Mink's [DriverInterface] (https://github.com/Behat/Mink/blob/master/src/Behat/Mink/Driver/DriverInterface.php). As a result, most of the methods defined by the interface are available. The ones that are not implemented throw an UnsupportedException.
 
-The css to xpath translation is handled by [the symphony CssSelector component] (http://symfony.com/doc/current/components/css_selector.html)
+The css to xpath translation is handled by [the Symfony CssSelector component] (http://symfony.com/doc/current/components/css_selector.html)
 
 ## Usage
 
@@ -76,7 +76,7 @@ describe("Visiting a URL", function() {
 });
 ```
 
-For more examples, take a look at the specs for [FunctionalPigeon] (https://github.com/bertrandmoulard/pigeon-webkit/blob/master/spec/lib/FunctionalPigeonSpec.php) and its base class, [CapybaraWebkiDriver] (https://github.com/bertrandmoulard/pigeon-webkit/blob/master/spec/lib/CapybaraWebkitDriverSpec.php).
+For more examples, take a look at the specs for [FunctionalPigeon](spec/lib/FunctionalPigeonSpec.php) and its base class, [CapybaraWebkiDriver](spec/lib/CapybaraWebkitDriverSpec.php).
 
 Some of the available methods
 
@@ -113,6 +113,3 @@ Some of the available methods
   evaluateScript
   getScreenshot
 ```
-
-
-
