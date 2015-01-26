@@ -35,7 +35,7 @@ $ php composer.phar global require etsy/pigeon-webkit:dev-master
 
 capybara-webkit provides a headless web browser (built on QT Webkit). When the browser starts, it opens up a port to accept commands. Pigeon Webkit starts the browser, opens a TCP connection to that port and sends commands to the browser to "drive" it and run assertions.
 
-FunctionalPigeon is extending CapybaraWebkitDriver, which is an implementation of Behat Mink's [DriverInterface] (https://github.com/Behat/Mink/blob/master/src/Behat/Mink/Driver/DriverInterface.php). As a result, most of the methods defined by the interface are available. The ones that are not implemented throw an UnsupportedException.
+FunctionalPigeon is extending CapybaraWebkitDriver, which is an implementation of Behat Mink's [DriverInterface] (https://github.com/minkphp/Mink/blob/master/src/Behat/Mink/Driver/DriverInterface.php). As a result, most of the methods defined by the interface are available. The ones that are not implemented throw an UnsupportedException.
 
 The css to xpath translation is handled by [the Symfony CssSelector component] (http://symfony.com/doc/current/components/css_selector.html)
 
