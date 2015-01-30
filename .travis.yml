@@ -16,5 +16,8 @@ matrix:
 before_script:
   - composer self-update
   - composer install
+before_install:
+  - sh -c 'if [ -n "$QMAKE" ]; then sudo apt-add-repository -y ppa:ubuntu-sdk-team/ppa && sudo apt-get update && sudo apt-get install libqt5webkit5-dev qtdeclarative5-dev; fi'
+  - sh -c 'gem install capybara-webkit -v 1.3.1'
 
-script: ./vendor/bin/pho -a --reporter spec
+script: xvfb-run ./vendor/bin/pho -a --reporter spec
