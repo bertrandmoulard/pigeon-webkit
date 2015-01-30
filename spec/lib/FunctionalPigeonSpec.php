@@ -6,7 +6,7 @@ use PigeonWebkit\FunctionalPigeon;
 
 describe("FunctionalPigeon", function() {
 
-  $this->foo_fixture_url = "http://localhost:84819/foo.html";
+  $this->foo_fixture_url = "http://localhost:8419/foo.html";
 
   before(function() {
     $this->test_http_server = startTestHttpServer();
