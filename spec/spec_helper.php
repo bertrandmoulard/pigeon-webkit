@@ -8,7 +8,7 @@ require __DIR__ . "/../lib/FunctionalPigeon.php";
 function startTestHttpServer() {
   $command = sprintf('php -S %s:%d -t %s',
                               'localhost',
-                              '84819',
+                              '8419',
                               __DIR__ . "/fixtures");
   $pipes = [];
 
