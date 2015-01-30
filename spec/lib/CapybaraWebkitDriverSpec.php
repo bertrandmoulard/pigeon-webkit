@@ -7,8 +7,8 @@ use PigeonWebkit\CapybaraWebkitDriver;
 
 describe("CapybaraWebkitDriver", function() {
 
-  $this->foo_fixture_url = "http://localhost:84819/foo.html";
-  $this->php_foo_fixture_url = "http://localhost:84819/fixture.php";
+  $this->foo_fixture_url = "http://localhost:8419/foo.html";
+  $this->php_foo_fixture_url = "http://localhost:8419/fixture.php";
 
   before(function() {
     $this->test_http_server = startTestHttpServer();
