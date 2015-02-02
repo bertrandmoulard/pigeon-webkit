@@ -1,4 +1,4 @@
-Pigeon Webkit
+![pigeon](https://cloud.githubusercontent.com/assets/247901/6005761/db2e982e-aada-11e4-9836-f0a659ba3512.png) Pigeon Webkit
 =============
 
 Functional testing tool for PHP built on top of [capybara-webkit](https://github.com/thoughtbot/capybara-webkit)
