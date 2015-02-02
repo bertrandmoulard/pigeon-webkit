@@ -1,5 +1,4 @@
 <?php
-
 namespace PigeonWebkit;
 
 class Browser {
@@ -46,7 +45,7 @@ class Browser {
   }
 
   public function generateServerPath($output_text) {
-    return trim(explode(":", $output_text)[1]) . "/gems/capybara-webkit-1.3.1/bin/webkit_server";
+    return trim(explode(":", $output_text)[1]) . "/gems/capybara-webkit-1.4.1/bin/webkit_server";
   }
 
   public function getGemCommandOuput() {
@@ -161,7 +160,11 @@ class Browser {
   }
 
   public function reset() {
-    $this->command("Reset");
+    if ($this->client) {
+      $this->command("Reset");
+    } else {
+      $this->start();
+    }
   }
 
   public function find($query) {
