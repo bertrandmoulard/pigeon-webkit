@@ -1,7 +1,4 @@
 <?php
-
-require_once __DIR__ . "/../spec_helper.php";
-
 use PigeonWebkit\Browser;
 use PigeonWebkit\CapybaraWebkitDriver;
 
@@ -11,7 +8,6 @@ describe("CapybaraWebkitDriver", function() {
   $this->php_foo_fixture_url = "http://localhost:8419/fixture.php";
 
   before(function() {
-    $this->test_http_server = startTestHttpServer();
     $browser = new Browser();
     $this->driver = new CapybaraWebkitDriver($browser);
     $this->session = new Behat\Mink\Session($this->driver);
@@ -21,7 +17,6 @@ describe("CapybaraWebkitDriver", function() {
 
   after(function() {
     $this->driver = null;
-    proc_terminate($this->test_http_server);
   });
 
   beforeEach(function() {
@@ -51,8 +46,8 @@ describe("CapybaraWebkitDriver", function() {
       before(function(){ $this->driver->stop(); });
       it("should start", function() {
         $this->driver->start();
-        expect(is_resource($this->driver->getBrowser()->getClient()))->toBeTrue();
-        expect(is_resource($this->driver->getBrowser()->getProcess()))->toBeTrue();
+        expect(is_resource($this->driver->getBrowser()->getClient()))->toBe(true);
+        expect(is_resource($this->driver->getBrowser()->getProcess()))->toBe(true);
       });
     });
 
@@ -70,7 +65,7 @@ describe("CapybaraWebkitDriver", function() {
   describe("#isStarted", function() {
     context("when the driver is started", function(){
       it("is true", function() {
-        expect($this->driver->isStarted())->toBeTrue();
+        expect($this->driver->isStarted())->toBe(true);
       });
     });
 
@@ -79,21 +74,14 @@ describe("CapybaraWebkitDriver", function() {
       after(function() { $this->driver->start(); });
 
       it("is false", function() {
-        expect($this->driver->isStarted())->toBeFalse();
+        expect($this->driver->isStarted())->toBe(false);
       });
     });
   });
 
   describe("#stop", function() {
-    before(function() {
-      $this->driver->stop();
-    });
-
-    after(function() {
-      $this->driver->start();
-    });
-
     it("stop the driver", function() {
+      $this->driver->stop();
       expect($this->driver->getBrowser()->getClient())->toBeNull();
       expect($this->driver->getBrowser()->getProcess())->toBeNull();
     });
@@ -104,10 +92,10 @@ describe("CapybaraWebkitDriver", function() {
       it("get reset", function() {
         $this->driver->setRequestHeader('X-Testing', 'testing');
         $this->driver->visit($this->php_foo_fixture_url);
-        expect($this->driver->getContent())->toContain('HTTP_X_TESTING');
+        expect($this->driver->getContent())->toMatch('/HTTP_X_TESTING/');
         $this->driver->reset();
         $this->driver->visit($this->php_foo_fixture_url);
-        expect($this->driver->getContent())->notToContain('HTTP_X_TESTING');
+        expect($this->driver->getContent())->not->toMatch('/HTTP_X_TESTING/');
       });
     });
 
@@ -116,10 +104,10 @@ describe("CapybaraWebkitDriver", function() {
         $this->driver->visit($this->php_foo_fixture_url);
         $this->driver->setCookie('reset_me', 'please');
         $this->driver->visit($this->php_foo_fixture_url);
-        expect($this->driver->getContent())->toContain('reset_me');
+        expect($this->driver->getContent())->toMatch('/reset_me/');
         $this->driver->reset();
         $this->driver->visit($this->php_foo_fixture_url);
-        expect($this->driver->getContent())->notToContain('reset_me');
+        expect($this->driver->getContent())->not->toMatch('/reset_me/');
       });
     });
   });
@@ -134,7 +122,7 @@ describe("CapybaraWebkitDriver", function() {
   describe("#getCurrentUrl", function() {
     it("returns the current url", function() {
       $this->driver->visit($this->foo_fixture_url);
-      expect($this->driver->getCurrentUrl())->toContain("foo.html");
+      expect($this->driver->getCurrentUrl())->toMatch("/foo.html/");
     });
   });
 
@@ -142,9 +130,9 @@ describe("CapybaraWebkitDriver", function() {
     it("reloads the page", function() {
       $this->driver->visit($this->foo_fixture_url);
       $this->driver->executeScript("document.write('new content');");
-      expect($this->driver->getContent())->toContain("new content");
+      expect($this->driver->getContent())->toMatch("/new content/");
       $this->driver->reload();
-      expect($this->driver->getContent())->notToContain("new content");
+      expect($this->driver->getContent())->not->toMatch("/new content/");
     });
   });
 
@@ -152,11 +140,11 @@ describe("CapybaraWebkitDriver", function() {
     it("goes forward", function() {
       $this->driver->visit($this->foo_fixture_url);
       $this->driver->click("//a[@id='link-to-bar']");
-      expect($this->driver->getContent())->toContain("bar page");
+      expect($this->driver->getContent())->toMatch("/bar page/");
       $this->driver->back();
-      expect($this->driver->getContent())->notToContain("bar page");
+      expect($this->driver->getContent())->not->toMatch("/bar page/");
       $this->driver->forward();
-      expect($this->driver->getContent())->toContain("bar page");
+      expect($this->driver->getContent())->toMatch("/bar page/");
     });
   });
 
@@ -164,9 +152,9 @@ describe("CapybaraWebkitDriver", function() {
     it("goes back", function() {
       $this->driver->visit($this->foo_fixture_url);
       $this->driver->click("//a[@id='link-to-bar']");
-      expect($this->driver->getContent())->toContain("bar page");
+      expect($this->driver->getContent())->toMatch("/bar page/");
       $this->driver->back();
-      expect($this->driver->getContent())->toContain("foo page");
+      expect($this->driver->getContent())->toMatch("/foo page/");
     });
   });
 
@@ -175,7 +163,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->setBasicAuth('good', 'morning');
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow('/Basic auth is not supported by/');
     });
   });
 
@@ -184,7 +172,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->switchToWindow();
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow('/Window management is not supported by/');
     });
   });
 
@@ -193,7 +181,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->switchToIFrame();
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow('/iFrame management is not supported by/');
     });
   });
 
@@ -201,8 +189,8 @@ describe("CapybaraWebkitDriver", function() {
     it("sets a request header", function() {
       $this->driver->setRequestHeader('X-Testing', 'testing!!!');
       $this->driver->visit($this->php_foo_fixture_url);
-      expect($this->driver->getContent())->toContain("X_TESTING");
-      expect($this->driver->getContent())->toContain("testing!!!");
+      expect($this->driver->getContent())->toMatch("/X_TESTING/");
+      expect($this->driver->getContent())->toMatch("/testing!!!/");
     });
   });
 
@@ -218,7 +206,7 @@ describe("CapybaraWebkitDriver", function() {
       $this->driver->visit($this->php_foo_fixture_url);
       $this->driver->setCookie("client_cookie", "I_am_browser_cookie");
       $this->driver->visit($this->php_foo_fixture_url);
-      expect($this->driver->getContent())->toContain("I_am_browser_cookie");
+      expect($this->driver->getContent())->toMatch("/I_am_browser_cookie/");
     });
   });
 
@@ -243,7 +231,7 @@ describe("CapybaraWebkitDriver", function() {
     context("when the driver is visiting a page", function() {
       it("returns the html source of the page", function() {
         $this->driver->visit($this->foo_fixture_url);
-        expect($this->driver->getContent())->toContain("find me: body");
+        expect($this->driver->getContent())->toMatch("/find me: body/");
       });
 
     });
@@ -258,7 +246,7 @@ describe("CapybaraWebkitDriver", function() {
   describe("#getScreenshot", function() {
     it("return the data for the screenshot", function() {
       $this->driver->visit($this->foo_fixture_url);
-      expect($this->driver->getScreenShot())->notToBeNull();;
+      expect($this->driver->getScreenShot())->not->toBe(null);
     });
   });
 
@@ -301,7 +289,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->getOuterHtml("anything");
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow('/iFrame management is not supported by/');
     });
   });
 
@@ -331,7 +319,7 @@ describe("CapybaraWebkitDriver", function() {
     it("checks the matched element", function() {
       $this->driver->visit($this->foo_fixture_url);
       $this->driver->check("//input[@class='find-me-unchecked']");
-      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeTrue();
+      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBe(true);
     });
   });
 
@@ -339,9 +327,9 @@ describe("CapybaraWebkitDriver", function() {
     it("unchecks the matched element", function() {
       $this->driver->visit($this->foo_fixture_url);
       $this->driver->check("//input[@class='find-me-unchecked']");
-      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeTrue();
+      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBe(true);
       $this->driver->uncheck("//input[@class='find-me-unchecked']");
-      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeFalse();
+      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBe(false);
     });
   });
 
@@ -353,13 +341,13 @@ describe("CapybaraWebkitDriver", function() {
     context("when the matching element is checked", function() {
       it("returns true", function() {
         $this->driver->check("//input[@class='find-me-unchecked']");
-        expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeTrue();
+        expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBe(true);
       });
     });
 
     context("when the matching element is not checked", function() {
       it("returns true", function() {
-        expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeFalse();
+        expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBe(false);
       });
     });
   });
@@ -367,19 +355,19 @@ describe("CapybaraWebkitDriver", function() {
   describe("#selectOption", function() {
     it("selects the option", function() {
       $this->driver->visit($this->foo_fixture_url);
-      expect($this->driver->isSelected("//option[@value='val_1']"))->toBeTrue();
-      expect($this->driver->isSelected("//option[@value='val_2']"))->toBeFalse();
+      expect($this->driver->isSelected("//option[@value='val_1']"))->toBe(true);
+      expect($this->driver->isSelected("//option[@value='val_2']"))->toBe(false);
       $this->driver->selectOption("//select[@name='dropdown']", "val_2");
-      expect($this->driver->isSelected("//option[@value='val_1']"))->toBeFalse();
-      expect($this->driver->isSelected("//option[@value='val_2']"))->toBeTrue();
+      expect($this->driver->isSelected("//option[@value='val_1']"))->toBe(false);
+      expect($this->driver->isSelected("//option[@value='val_2']"))->toBe(true);
     });
   });
 
   describe("#isSelected", function() {
     it("returns true is the element is selected, false otherwise", function() {
       $this->driver->visit($this->foo_fixture_url);
-      expect($this->driver->isSelected("//option[@value='val_1']"))->toBeTrue();
-      expect($this->driver->isSelected("//option[@value='val_2']"))->toBeFalse();
+      expect($this->driver->isSelected("//option[@value='val_1']"))->toBe(true);
+      expect($this->driver->isSelected("//option[@value='val_2']"))->toBe(false);
     });
   });
 
@@ -387,7 +375,7 @@ describe("CapybaraWebkitDriver", function() {
     it("clicks on the element", function() {
       $this->driver->visit($this->foo_fixture_url);
       $this->driver->click("//a[@id='link-to-bar']");
-      expect($this->driver->getCurrentUrl())->toContain("bar.html");
+      expect($this->driver->getCurrentUrl())->toMatch("/bar.html/");
     });
   });
 
@@ -404,13 +392,13 @@ describe("CapybaraWebkitDriver", function() {
 
     context("when the node is visible", function() {
       it("is true", function() {
-        expect($this->driver->isVisible("//div[@class='visible']"))->toBeTrue();
+        expect($this->driver->isVisible("//div[@class='visible']"))->toBe(true);
       });
     });
 
     context("when the node is invisible", function() {
       it("is false", function() {
-        expect($this->driver->isVisible("//div[@class='invisible']"))->toBeFalse();
+        expect($this->driver->isVisible("//div[@class='invisible']"))->toBe(false);
       });
     });
   });
@@ -433,7 +421,7 @@ describe("CapybaraWebkitDriver", function() {
     it("executes the script", function() {
       $this->driver->visit($this->foo_fixture_url);
       $this->driver->executeScript("document.write('content from executed script')");
-      expect($this->driver->getContent())->toContain("content from executed script");
+      expect($this->driver->getContent())->toMatch("/content from executed script/");
     });
   });
 
@@ -449,7 +437,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->wait(2, "");
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow('/Basic auth is not supported by/');
     });
   });
 
@@ -458,7 +446,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->resizeWindow(10, 10);
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow('/Basic auth is not supported by/');
     });
   });
 
@@ -467,7 +455,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->maximizeWindow();
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow('/Basic auth is not supported by/');
     });
   });
 
@@ -475,7 +463,7 @@ describe("CapybaraWebkitDriver", function() {
     it("submits the form", function() {
       $this->driver->visit($this->foo_fixture_url);
       $this->driver->submitForm("//form");
-      expect($this->driver->getContent())->toContain("bar page");
+      expect($this->driver->getContent())->toMatch("/bar page/");
     });
   });
 });

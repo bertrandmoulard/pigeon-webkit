@@ -5,9 +5,13 @@
     "behat/mink": "1.5.*@stable"
   },
   "require-dev": {
-    "danielstjules/pho": "~1.1"
+    "crysalead/kahlan": "~1.0"
   },
   "autoload": {
     "psr-4": { "PigeonWebkit\\": "lib/" }
-  }
+  },
+  "config": {
+    "bin-dir": "bin"
+  },
+  "minimum-stability": "dev"
 }

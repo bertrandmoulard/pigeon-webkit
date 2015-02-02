@@ -1,21 +1,17 @@
 <?php
-
-require_once __DIR__ . "/../spec_helper.php";
-
 use PigeonWebkit\FunctionalPigeon;
+use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
 
 describe("FunctionalPigeon", function() {
 
   $this->foo_fixture_url = "http://localhost:8419/foo.html";
 
   before(function() {
-    $this->test_http_server = startTestHttpServer();
     $this->pigeon = new FunctionalPigeon();
   });
 
   after(function() {
     $this->pigeon = null;
-    proc_terminate($this->test_http_server);
   });
 
   beforeEach(function() {
@@ -50,14 +46,14 @@ describe("FunctionalPigeon", function() {
       $callable = function() use ($query) {
         $this->pigeon->find($query);
       };
-      expect($callable)->toThrow('Symfony\Component\CssSelector\Exception\SyntaxErrorException');
+      expect($callable)->toThrow(new SyntaxErrorException());
 
       $this->pigeon->setXPathMode(true);
-      expect($callable)->notToThrow('Symfony\Component\CssSelector\Exception\SyntaxErrorException');
+      expect($callable)->not->toThrow(new SyntaxErrorException());
       expect(count($this->pigeon->find($query)))->toBe(1);
 
       $this->pigeon->setXPathMode(false);
-      expect($callable)->toThrow('Symfony\Component\CssSelector\Exception\SyntaxErrorException');
+      expect($callable)->toThrow(new SyntaxErrorException());
       expect(count($this->pigeon->find(".test-css-class")))->toBe(1);
 
     });
@@ -67,7 +63,7 @@ describe("FunctionalPigeon", function() {
     it("takes a screen shot and saves it to the specified location", function() {
       $this->pigeon->visit($this->foo_fixture_url);
       $this->pigeon->saveScreenShot("/tmp/tmp.png");
-      expect(exec('file /tmp/tmp.png'))->toContain("PNG");
+      expect(exec('file /tmp/tmp.png'))->toMatch("/PNG/");
       exec('rm /tmp/tmp.png');
     });
   });
@@ -75,7 +71,7 @@ describe("FunctionalPigeon", function() {
   describe("#body", function() {
     it("returns the html source of the page", function() {
       $this->pigeon->visit($this->foo_fixture_url);
-      expect($this->pigeon->body())->toContain("find me: body");
+      expect($this->pigeon->body())->toMatch("/find me: body/");
     });
   });
 });
