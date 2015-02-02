@@ -3,6 +3,8 @@
 
 Functional testing tool for PHP built on top of [capybara-webkit](https://github.com/thoughtbot/capybara-webkit)
 
+[![Build Status](https://travis-ci.org/bertrandmoulard/pigeon-webkit.svg?branch=master)](https://travis-ci.org/bertrandmoulard/pigeon-webkit)
+
  * [Installation](#installation)
  * [How it works](#how-it-works)
  * [Usage](#usage)
