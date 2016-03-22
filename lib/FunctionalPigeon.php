@@ -2,8 +2,7 @@
 
 namespace PigeonWebkit;
 
-use Symfony\Component\CssSelector\CssSelector,
-  Behat\Mink\Session;
+use Behat\Mink\Session;
 
 class FunctionalPigeon extends CapybaraWebkitDriver {
 
@@ -39,7 +38,8 @@ class PigeonBrowser extends Browser {
   protected $mode = "css";
 
   public function find($query) {
-    $query = $this->mode == "xpath" ? $query : CssSelector::toXPath($query);
+    $css_selector = new \Symfony\Component\CssSelector\CssSelectorConverter();
+    $query = $this->mode == "xpath" ? $query : $css_selector->toXPath($query);
     return parent::find($query);
   }
 
