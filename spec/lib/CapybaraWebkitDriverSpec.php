@@ -17,6 +17,7 @@ describe("CapybaraWebkitDriver", function() {
     $this->session = new Behat\Mink\Session($this->driver);
     $this->driver->setSession($this->session);
     $this->driver->start();
+    $this->unsupported_driver_exception = new \Behat\Mink\Exception\UnsupportedDriverActionException("", $this->driver);
   });
 
   after(function() {
@@ -26,6 +27,27 @@ describe("CapybaraWebkitDriver", function() {
 
   beforeEach(function() {
     $this->driver->reset();
+  });
+
+  describe("#start", function() {
+    context("when the driver is stopped", function() {
+      before(function(){ $this->driver->stop(); });
+      it("should start", function() {
+        $this->driver->start();
+        expect(is_resource($this->driver->getBrowser()->getClient()))->toBe(true);
+        expect(is_resource($this->driver->getBrowser()->getProcess()))->toBe(true);
+      });
+    });
+
+    context("when the driver is started", function() {
+      it("should have no effect", function() {
+        $client = $this->driver->getBrowser()->getClient();
+        $process = $this->driver->getBrowser()->getProcess();
+        $this->driver->start();
+        expect($this->driver->getBrowser()->getClient())->toBe($client);
+        expect($this->driver->getBrowser()->getProcess())->toBe($process);
+      });
+    });
   });
 
   describe("#setSession", function() {
@@ -46,31 +68,10 @@ describe("CapybaraWebkitDriver", function() {
     });
   });
 
-  describe("#start", function() {
-    context("when the driver is stopped", function() {
-      before(function(){ $this->driver->stop(); });
-      it("should start", function() {
-        $this->driver->start();
-        expect(is_resource($this->driver->getBrowser()->getClient()))->toBeTrue();
-        expect(is_resource($this->driver->getBrowser()->getProcess()))->toBeTrue();
-      });
-    });
-
-    context("when the driver is started", function() {
-      it("should have no effect", function() {
-        $client = $this->driver->getBrowser()->getClient();
-        $process = $this->driver->getBrowser()->getProcess();
-        $this->driver->start();
-        expect($this->driver->getBrowser()->getClient())->toBe($client);
-        expect($this->driver->getBrowser()->getProcess())->toBe($process);
-      });
-    });
-  });
-
   describe("#isStarted", function() {
     context("when the driver is started", function(){
       it("is true", function() {
-        expect($this->driver->isStarted())->toBeTrue();
+        expect($this->driver->isStarted())->toBe(true);
       });
     });
 
@@ -79,7 +80,7 @@ describe("CapybaraWebkitDriver", function() {
       after(function() { $this->driver->start(); });
 
       it("is false", function() {
-        expect($this->driver->isStarted())->toBeFalse();
+        expect($this->driver->isStarted())->toBe(false);
       });
     });
   });
@@ -107,7 +108,7 @@ describe("CapybaraWebkitDriver", function() {
         expect($this->driver->getContent())->toContain('HTTP_X_TESTING');
         $this->driver->reset();
         $this->driver->visit($this->php_foo_fixture_url);
-        expect($this->driver->getContent())->notToContain('HTTP_X_TESTING');
+        expect($this->driver->getContent())->not->toContain('HTTP_X_TESTING');
       });
     });
 
@@ -119,7 +120,7 @@ describe("CapybaraWebkitDriver", function() {
         expect($this->driver->getContent())->toContain('reset_me');
         $this->driver->reset();
         $this->driver->visit($this->php_foo_fixture_url);
-        expect($this->driver->getContent())->notToContain('reset_me');
+        expect($this->driver->getContent())->not->toContain('reset_me');
       });
     });
   });
@@ -144,7 +145,7 @@ describe("CapybaraWebkitDriver", function() {
       $this->driver->executeScript("document.write('new content');");
       expect($this->driver->getContent())->toContain("new content");
       $this->driver->reload();
-      expect($this->driver->getContent())->notToContain("new content");
+      expect($this->driver->getContent())->not->toContain("new content");
     });
   });
 
@@ -154,7 +155,7 @@ describe("CapybaraWebkitDriver", function() {
       $this->driver->click("//a[@id='link-to-bar']");
       expect($this->driver->getContent())->toContain("bar page");
       $this->driver->back();
-      expect($this->driver->getContent())->notToContain("bar page");
+      expect($this->driver->getContent())->not->toContain("bar page");
       $this->driver->forward();
       expect($this->driver->getContent())->toContain("bar page");
     });
@@ -175,7 +176,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->setBasicAuth('good', 'morning');
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow($this->unsupported_driver_exception);
     });
   });
 
@@ -184,7 +185,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->switchToWindow();
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow($this->unsupported_driver_exception);
     });
   });
 
@@ -193,7 +194,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->switchToIFrame();
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow($this->unsupported_driver_exception);
     });
   });
 
@@ -258,7 +259,7 @@ describe("CapybaraWebkitDriver", function() {
   describe("#getScreenshot", function() {
     it("return the data for the screenshot", function() {
       $this->driver->visit($this->foo_fixture_url);
-      expect($this->driver->getScreenShot())->notToBeNull();;
+      expect($this->driver->getScreenShot())->not->toBeNull();;
     });
   });
 
@@ -301,7 +302,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->getOuterHtml("anything");
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow($this->unsupported_driver_exception);
     });
   });
 
@@ -331,7 +332,7 @@ describe("CapybaraWebkitDriver", function() {
     it("checks the matched element", function() {
       $this->driver->visit($this->foo_fixture_url);
       $this->driver->check("//input[@class='find-me-unchecked']");
-      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeTrue();
+      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBe(true);
     });
   });
 
@@ -339,9 +340,9 @@ describe("CapybaraWebkitDriver", function() {
     it("unchecks the matched element", function() {
       $this->driver->visit($this->foo_fixture_url);
       $this->driver->check("//input[@class='find-me-unchecked']");
-      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeTrue();
+      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBe(true);
       $this->driver->uncheck("//input[@class='find-me-unchecked']");
-      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeFalse();
+      expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBe(false);
     });
   });
 
@@ -353,13 +354,13 @@ describe("CapybaraWebkitDriver", function() {
     context("when the matching element is checked", function() {
       it("returns true", function() {
         $this->driver->check("//input[@class='find-me-unchecked']");
-        expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeTrue();
+        expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBe(true);
       });
     });
 
     context("when the matching element is not checked", function() {
       it("returns true", function() {
-        expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBeFalse();
+        expect($this->driver->isChecked("//input[@class='find-me-unchecked']"))->toBe(false);
       });
     });
   });
@@ -367,19 +368,19 @@ describe("CapybaraWebkitDriver", function() {
   describe("#selectOption", function() {
     it("selects the option", function() {
       $this->driver->visit($this->foo_fixture_url);
-      expect($this->driver->isSelected("//option[@value='val_1']"))->toBeTrue();
-      expect($this->driver->isSelected("//option[@value='val_2']"))->toBeFalse();
+      expect($this->driver->isSelected("//option[@value='val_1']"))->toBe(true);
+      expect($this->driver->isSelected("//option[@value='val_2']"))->toBe(false);
       $this->driver->selectOption("//select[@name='dropdown']", "val_2");
-      expect($this->driver->isSelected("//option[@value='val_1']"))->toBeFalse();
-      expect($this->driver->isSelected("//option[@value='val_2']"))->toBeTrue();
+      expect($this->driver->isSelected("//option[@value='val_1']"))->toBe(false);
+      expect($this->driver->isSelected("//option[@value='val_2']"))->toBe(true);
     });
   });
 
   describe("#isSelected", function() {
     it("returns true is the element is selected, false otherwise", function() {
       $this->driver->visit($this->foo_fixture_url);
-      expect($this->driver->isSelected("//option[@value='val_1']"))->toBeTrue();
-      expect($this->driver->isSelected("//option[@value='val_2']"))->toBeFalse();
+      expect($this->driver->isSelected("//option[@value='val_1']"))->toBe(true);
+      expect($this->driver->isSelected("//option[@value='val_2']"))->toBe(false);
     });
   });
 
@@ -404,13 +405,13 @@ describe("CapybaraWebkitDriver", function() {
 
     context("when the node is visible", function() {
       it("is true", function() {
-        expect($this->driver->isVisible("//div[@class='visible']"))->toBeTrue();
+        expect($this->driver->isVisible("//div[@class='visible']"))->toBe(true);
       });
     });
 
     context("when the node is invisible", function() {
       it("is false", function() {
-        expect($this->driver->isVisible("//div[@class='invisible']"))->toBeFalse();
+        expect($this->driver->isVisible("//div[@class='invisible']"))->toBe(false);
       });
     });
   });
@@ -449,7 +450,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->wait(2, "");
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow($this->unsupported_driver_exception);
     });
   });
 
@@ -458,7 +459,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->resizeWindow(10, 10);
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow($this->unsupported_driver_exception);
     });
   });
 
@@ -467,7 +468,7 @@ describe("CapybaraWebkitDriver", function() {
       $callable = function() {
         $this->driver->maximizeWindow();
       };
-      expect($callable)->toThrow('Behat\Mink\Exception\UnsupportedDriverActionException');
+      expect($callable)->toThrow($this->unsupported_driver_exception);
     });
   });
 

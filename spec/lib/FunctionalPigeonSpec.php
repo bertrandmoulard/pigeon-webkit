@@ -50,14 +50,14 @@ describe("FunctionalPigeon", function() {
       $callable = function() use ($query) {
         $this->pigeon->find($query);
       };
-      expect($callable)->toThrow('Symfony\Component\CssSelector\Exception\SyntaxErrorException');
+      expect($callable)->toThrow(new Symfony\Component\CssSelector\Exception\SyntaxErrorException());
 
       $this->pigeon->setXPathMode(true);
-      expect($callable)->notToThrow('Symfony\Component\CssSelector\Exception\SyntaxErrorException');
+      expect($callable)->not->toThrow(new Symfony\Component\CssSelector\Exception\SyntaxErrorException());
       expect(count($this->pigeon->find($query)))->toBe(1);
 
       $this->pigeon->setXPathMode(false);
-      expect($callable)->toThrow('Symfony\Component\CssSelector\Exception\SyntaxErrorException');
+      expect($callable)->toThrow(new Symfony\Component\CssSelector\Exception\SyntaxErrorException());
       expect(count($this->pigeon->find(".test-css-class")))->toBe(1);
 
     });

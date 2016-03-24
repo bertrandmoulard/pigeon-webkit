@@ -161,7 +161,9 @@ class Browser {
   }
 
   public function reset() {
-    $this->command("Reset");
+    if($this->client) {
+      $this->command("Reset");
+    }
   }
 
   public function find($query) {
