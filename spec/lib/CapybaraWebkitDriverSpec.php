@@ -94,7 +94,7 @@ describe("CapybaraWebkitDriver", function() {
       $this->driver->start();
     });
 
-    it("stop the driver", function() {
+    it("stops the driver", function() {
       expect($this->driver->getBrowser()->getClient())->toBeNull();
       expect($this->driver->getBrowser()->getProcess())->toBeNull();
     });
