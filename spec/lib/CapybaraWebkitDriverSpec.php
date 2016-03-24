@@ -210,7 +210,7 @@ describe("CapybaraWebkitDriver", function() {
   describe("#getResponseHeaders", function() {
     it("returns the response headers", function() {
       $this->driver->visit($this->foo_fixture_url);
-      expect($this->driver->getResponseHeaders()['Content-Type'])->toBe("text/html; charset=UTF-8");
+      expect($this->driver->getResponseHeaders()->{'Content-Type'})->toBe("text/html; charset=UTF-8");
     });
   });
 

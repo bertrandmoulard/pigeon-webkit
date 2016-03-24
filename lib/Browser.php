@@ -46,7 +46,7 @@ class Browser {
   }
 
   public function generateServerPath($output_text) {
-    return trim(explode(":", $output_text)[1]) . "/gems/capybara-webkit-1.3.1/bin/webkit_server";
+    return trim(explode(":", $output_text)[1]) . "/gems/capybara-webkit-1.8.0/bin/webkit_server";
   }
 
   public function getGemCommandOuput() {
@@ -84,13 +84,7 @@ class Browser {
   }
 
   public function responseHeader() {
-    $result = [];
-    foreach (explode("\n", $this->command("Headers")) as $line) {
-      list($key, $value) = explode(": ", $line);
-      $result[$key] = $value;
-    }
-
-    return $result;
+    return json_decode($this->command("Headers"));
   }
 
   public function setHeader($key, $value) {

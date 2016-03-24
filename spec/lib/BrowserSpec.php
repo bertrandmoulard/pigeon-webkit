@@ -8,8 +8,8 @@ describe("Browser", function() {
   describe("generateServerPath", function() {
     it("returns the server path", function() {
       $browser = new Browser();
-      $path = $browser->generateServerPath("- INSTALLATION DIRECTORY: /Library/Ruby/Gems/2.0.0");
-      expect($path)->toBe("/Library/Ruby/Gems/2.0.0/gems/capybara-webkit-1.3.1/bin/webkit_server");
+      $path = $browser->generateServerPath("- INSTALLATION DIRECTORY: /Library/Ruby/Gems/someversion");
+      expect($path)->toBe("/Library/Ruby/Gems/someversion/gems/capybara-webkit-1.8.0/bin/webkit_server");
     });
   });
 });

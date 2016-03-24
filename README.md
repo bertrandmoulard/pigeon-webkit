@@ -18,13 +18,13 @@ have Composer, you can download it from [https://getcomposer.org/](https://getco
  * Install capybara-webkit
 
 ```
-$ gem install capybara-webkit -v "1.3.1"
+$ gem install capybara-webkit -v "1.8.0"
 ```
 
 or
 
 ```
-$ sudo gem install capybara-webkit -v "1.3.1"
+$ sudo gem install capybara-webkit -v "1.8.0"
 ```
 
  * Run the following command:
@@ -51,7 +51,7 @@ $pigeon->click("a#sign-in"); // opens the sign in modal
 // ...etc
 ```
 
-By default, Pigeon Webkit accepts css selectors. But it also has an xpath mode.
+By default, Pigeon Webkit accepts css selectors. But it also has a xpath mode.
 
 ```php
 $pigeon->setXPathMode(true);
@@ -59,7 +59,7 @@ $pigeon->visit("https://etsy.com");
 $pigeon->click("//a[@id='sign-in']");
 ```
 
-Example usage with the [pho] (https://github.com/danielstjules/pho) testing framework
+Example usage with the [kahlan] (https://github.com/crysalead/kahlan) testing framework
 
 ```php
 <?php
