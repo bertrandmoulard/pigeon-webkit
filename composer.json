@@ -1,5 +1,6 @@
 {
   "name": "etsy/pigeon-webkit",
+  "version": "0.1.3",
   "require": {
     "php": ">=5.3",
     "behat/mink": "1.5.*@stable"
