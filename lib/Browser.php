@@ -60,9 +60,6 @@ class Browser {
         if(file_exists($path . $suffix)) {
           return $path . $suffix;
         }
-        if(!file_exists($path)) {
-          $inside_gem_paths_block = false;
-        }
       }
     }
   }
