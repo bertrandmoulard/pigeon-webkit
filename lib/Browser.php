@@ -12,7 +12,7 @@ class Browser {
     if($server_path) {
       $this->server_path = $server_path;
     } else {
-      $this->server_path = $this->generateServerPath(exec('gem environment | grep INSTALLATION'));
+      $this->server_path = $this->findServerPath();
     }
     $this->start();
   }
@@ -45,12 +45,26 @@ class Browser {
     return $this->server_path;
   }
 
-  public function generateServerPath($output_text) {
-    return trim(explode(":", $output_text)[1]) . "/gems/capybara-webkit-1.8.0/bin/webkit_server";
-  }
-
-  public function getGemCommandOuput() {
-    return exec('gem environment | grep INSTALLATION');
+  private function findServerPath() {
+    $suffix = "/gems/capybara-webkit-1.8.0/bin/webkit_server";
+    $lines = [];
+    exec('gem environment', $lines);
+    $inside_gem_paths_block = false;
+    foreach($lines as $line) {
+      if(trim($line) == "- GEM PATHS:") {
+        $inside_gem_paths_block = true;
+        continue;
+      }
+      if($inside_gem_paths_block) {
+        $path = str_replace("- ", "", trim($line));
+        if(file_exists($path . $suffix)) {
+          return $path . $suffix;
+        }
+        if(!file_exists($path)) {
+          $inside_gem_paths_block = false;
+        }
+      }
+    }
   }
 
   public function ignoreSslErrors() {
