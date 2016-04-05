@@ -14,7 +14,7 @@ class Browser
         if ($server_path) {
             $this->server_path = $server_path;
         } else {
-            $this->server_path = $this->findServerPath();
+            $this->server_path = self::findServerPath();
         }
         $this->start();
     }
@@ -53,7 +53,7 @@ class Browser
         return $this->server_path;
     }
 
-    private function findServerPath()
+    public static function findServerPath()
     {
         $suffix = "/gems/capybara-webkit-1.8.0/bin/webkit_server";
         $lines = [];
