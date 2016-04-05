@@ -1,10 +1,5 @@
 <?php
 
-require __DIR__ . "/../vendor/autoload.php";
-require __DIR__ . "/../lib/Browser.php";
-require __DIR__ . "/../lib/CapybaraWebkitDriver.php";
-require __DIR__ . "/../lib/FunctionalPigeon.php";
-
 function startTestHttpServer() {
     $command = sprintf('php -S %s:%d -t %s',
         'localhost',
