@@ -42,7 +42,7 @@ describe("Browser", function() {
 
     fdescribe("#findServerPath", function() {
         it("should find the webkit server", function() {
-            Monkey::patch('exec', function($command, &$output=[], &$return_var) {
+            Monkey::patch('exec', function($command, &$output=[], &$return_var=null) {
                 echo "inside the fake function\n";
                 array_push($output, "A line of output");
             });
