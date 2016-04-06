@@ -8,6 +8,10 @@ php:
   - 5.5
   - 5.4
 
+branches:
+  only:
+    - master
+
 matrix:
   fast_finish: true
 
