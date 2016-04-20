@@ -1,4 +1,4 @@
-![pigeon](https://cloud.githubusercontent.com/assets/247901/14675624/d5e5a704-06d7-11e6-9d1f-5d47615308e4.png)
+![pigeon](https://cloud.githubusercontent.com/assets/247901/14675686/34040c90-06d8-11e6-9b64-0829d82ed3a9.png)
 =============
 
 Functional testing tool for PHP built on top of [capybara-webkit](https://github.com/thoughtbot/capybara-webkit)
